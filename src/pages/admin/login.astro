@@ -1,0 +1,25 @@
+---
+import Layout from '@/components/Layout.astro';
+import PasskeyLogin from '@/components/admin/PasskeyLogin';
+import { db, schema } from '@/db';
+
+export const prerender = false;
+
+// If no users exist, redirect to enroll
+const users = await db.select({ id: schema.users.id }).from(schema.users).limit(1);
+if (users.length === 0) {
+  return Astro.redirect('/admin/enroll');
+}
+
+// Already logged in? go to admin
+if (Astro.locals.user) {
+  return Astro.redirect('/admin');
+}
+---
+
+<Layout title="Sign in">
+  <div class="mx-auto max-w-sm pt-16">
+    <h1 class="mb-6 text-2xl font-bold">Sign in</h1>
+    <PasskeyLogin client:load />
+  </div>
+</Layout>

@@ -1,0 +1,31 @@
+---
+import Layout from '@/components/Layout.astro';
+import Editor from '@/components/admin/Editor';
+import { db, schema } from '@/db';
+import { eq } from 'drizzle-orm';
+import { requireAdmin } from '@/lib/auth';
+
+export const prerender = false;
+
+const denied = requireAdmin(Astro, 'page');
+if (denied) return denied;
+
+const id = Astro.params.id!;
+const [post] = await db.select().from(schema.posts).where(eq(schema.posts.id, id)).limit(1);
+if (!post) {
+  return new Response('Not Found', { status: 404 });
+}
+
+const initial = {
+  id: post.id,
+  title: post.title,
+  slug: post.slug,
+  excerpt: post.excerpt,
+  contentMd: post.contentMd,
+  published: post.published,
+};
+---
+
+<Layout title={`Edit · ${post.title}`}>
+  <Editor client:load initial={initial} />
+</Layout>

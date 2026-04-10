@@ -1,0 +1,24 @@
+---
+import Layout from '@/components/Layout.astro';
+import PasskeyEnroll from '@/components/admin/PasskeyEnroll';
+import { db, schema } from '@/db';
+
+export const prerender = false;
+
+// Only accessible on first run
+const users = await db.select({ id: schema.users.id }).from(schema.users).limit(1);
+if (users.length > 0) {
+  return new Response('Not Found', { status: 404 });
+}
+---
+
+<Layout title="First-time setup">
+  <div class="mx-auto max-w-sm pt-16">
+    <h1 class="mb-2 text-2xl font-bold">First-time setup</h1>
+    <p class="mb-6 text-sm text-neutral-500 dark:text-neutral-400">
+      Create a passkey to claim this blog. This page self-destructs after the first successful
+      enrollment.
+    </p>
+    <PasskeyEnroll client:load />
+  </div>
+</Layout>

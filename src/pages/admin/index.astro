@@ -1,0 +1,64 @@
+---
+import Layout from '@/components/Layout.astro';
+import { db, schema } from '@/db';
+import { desc } from 'drizzle-orm';
+import { requireAdmin } from '@/lib/auth';
+
+export const prerender = false;
+
+const denied = requireAdmin(Astro, 'page');
+if (denied) return denied;
+
+const posts = await db
+  .select({
+    id: schema.posts.id,
+    slug: schema.posts.slug,
+    title: schema.posts.title,
+    published: schema.posts.published,
+    updatedAt: schema.posts.updatedAt,
+  })
+  .from(schema.posts)
+  .orderBy(desc(schema.posts.updatedAt));
+---
+
+<Layout title="Admin">
+  <div class="flex items-center justify-between">
+    <h1 class="text-2xl font-bold">Posts</h1>
+    <div class="flex items-center gap-2">
+      <a
+        href="/admin/new"
+        class="rounded bg-neutral-900 px-3 py-2 text-sm font-medium text-white hover:bg-neutral-700 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
+      >
+        New post
+      </a>
+      <form method="POST" action="/api/auth/logout">
+        <button
+          type="submit"
+          class="rounded px-3 py-2 text-sm text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100"
+        >
+          Sign out
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <ul class="mt-6 divide-y divide-neutral-200 dark:divide-neutral-800">
+    {
+      posts.length === 0 && (
+        <li class="py-6 text-sm text-neutral-500">No posts yet. Create your first one.</li>
+      )
+    }
+    {
+      posts.map((p) => (
+        <li class="py-3">
+          <a href={`/admin/edit/${p.id}`} class="flex items-center justify-between gap-3">
+            <span class="truncate font-medium">{p.title || '(untitled)'}</span>
+            <span class="shrink-0 text-xs text-neutral-500">
+              {p.published ? 'Published' : 'Draft'}
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</Layout>

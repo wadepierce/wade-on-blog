@@ -1,0 +1,51 @@
+---
+import Layout from '@/components/Layout.astro';
+import { db, schema } from '@/db';
+import { desc, eq } from 'drizzle-orm';
+
+export const prerender = false;
+
+const posts = await db
+  .select({
+    slug: schema.posts.slug,
+    title: schema.posts.title,
+    excerpt: schema.posts.excerpt,
+    publishedAt: schema.posts.publishedAt,
+  })
+  .from(schema.posts)
+  .where(eq(schema.posts.published, true))
+  .orderBy(desc(schema.posts.publishedAt));
+
+const fmt = new Intl.DateTimeFormat('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+---
+
+<Layout title="wade on blog">
+  {
+    posts.length === 0 && (
+      <p class="text-neutral-500">Nothing here yet.</p>
+    )
+  }
+  <ul class="space-y-8">
+    {
+      posts.map((p) => (
+        <li>
+          <a href={`/posts/${p.slug}`} class="group block">
+            <h2 class="text-xl font-semibold group-hover:underline">{p.title}</h2>
+            {p.publishedAt && (
+              <time class="text-xs text-neutral-500" datetime={p.publishedAt.toISOString()}>
+                {fmt.format(p.publishedAt)}
+              </time>
+            )}
+            {p.excerpt && (
+              <p class="mt-2 text-neutral-700 dark:text-neutral-300">{p.excerpt}</p>
+            )}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</Layout>

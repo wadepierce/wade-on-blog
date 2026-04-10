@@ -1,0 +1,40 @@
+---
+import Layout from '@/components/Layout.astro';
+import { db, schema } from '@/db';
+import { and, eq } from 'drizzle-orm';
+
+export const prerender = false;
+
+const slug = Astro.params.slug!;
+const [post] = await db
+  .select()
+  .from(schema.posts)
+  .where(and(eq(schema.posts.slug, slug), eq(schema.posts.published, true)))
+  .limit(1);
+
+if (!post) {
+  return new Response('Not Found', { status: 404 });
+}
+
+const fmt = new Intl.DateTimeFormat('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<Layout title={post.title} description={post.excerpt}>
+  <article>
+    <header class="mb-8">
+      <h1 class="text-3xl font-bold">{post.title}</h1>
+      {
+        post.publishedAt && (
+          <time class="mt-2 block text-sm text-neutral-500" datetime={post.publishedAt.toISOString()}>
+            {fmt.format(post.publishedAt)}
+          </time>
+        )
+      }
+    </header>
+    <div class="prose dark:prose-invert max-w-none" set:html={post.contentHtml} />
+  </article>
+</Layout>
