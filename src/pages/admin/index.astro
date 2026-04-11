@@ -53,14 +53,14 @@ const dateFmt = new Intl.DateTimeFormat(undefined, {
     <div class="flex items-center gap-2">
       <a
         href="/admin/new"
-        class="rounded bg-neutral-900 px-3 py-2 text-sm font-medium text-white hover:bg-neutral-700 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
+        class="rounded bg-electric-500 px-3 py-2 text-sm font-medium text-ink-950 shadow-[0_0_0_1px_theme(colors.electric.400),0_0_12px_-4px_theme(colors.electric.500)] hover:bg-electric-400"
       >
         New post
       </a>
       <form method="POST" action="/api/auth/logout">
         <button
           type="submit"
-          class="rounded px-3 py-2 text-sm text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100"
+          class="rounded px-3 py-2 text-sm text-neutral-500 hover:text-electric-600 dark:hover:text-electric-400"
         >
           Sign out
         </button>
@@ -68,7 +68,7 @@ const dateFmt = new Intl.DateTimeFormat(undefined, {
     </div>
   </div>
 
-  <ul class="mt-6 divide-y divide-neutral-200 dark:divide-neutral-800">
+  <ul class="mt-6 divide-y divide-neutral-200 dark:divide-electric-900">
     {
       posts.length === 0 && (
         <li class="py-6 text-sm text-neutral-500">No posts yet. Create your first one.</li>
@@ -77,9 +77,9 @@ const dateFmt = new Intl.DateTimeFormat(undefined, {
     {
       posts.map((p) => (
         <li class="py-3">
-          <a href={`/admin/edit/${p.id}`} class="flex items-center justify-between gap-3">
+          <a href={`/admin/edit/${p.id}`} class="flex items-center justify-between gap-3 hover:text-electric-600 dark:hover:text-electric-400">
             <span class="truncate font-medium">{p.title || '(untitled)'}</span>
-            <span class="shrink-0 text-xs text-neutral-500">
+            <span class="shrink-0 text-xs text-electric-700 dark:text-electric-400">
               {p.published ? 'Published' : 'Draft'}
             </span>
           </a>
@@ -88,7 +88,7 @@ const dateFmt = new Intl.DateTimeFormat(undefined, {
     }
   </ul>
 
-  <section class="mt-12 border-t border-neutral-200 pt-8 dark:border-neutral-800">
+  <section class="mt-12 border-t border-neutral-200 pt-8 dark:border-electric-900">
     <div class="flex items-center justify-between">
       <h2 class="text-lg font-bold">Passkeys</h2>
       <PasskeyAdd client:load />
@@ -96,7 +96,7 @@ const dateFmt = new Intl.DateTimeFormat(undefined, {
     <p class="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
       Devices that can sign in as admin. Add one per device you use.
     </p>
-    <ul class="mt-4 divide-y divide-neutral-200 dark:divide-neutral-800">
+    <ul class="mt-4 divide-y divide-neutral-200 dark:divide-electric-900">
       {
         passkeys.map((pk) => (
           <li class="flex items-center justify-between py-3 text-sm">

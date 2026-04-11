@@ -40,7 +40,7 @@ export default function PasskeyEnroll() {
         type="button"
         onClick={enroll}
         disabled={status === 'working'}
-        className="w-full rounded-lg bg-neutral-900 px-4 py-3 text-base font-semibold text-white hover:bg-neutral-700 disabled:opacity-60 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
+        className="w-full rounded-lg bg-electric-500 px-4 py-3 text-base font-semibold text-ink-950 shadow-[0_0_0_1px_theme(colors.electric.400),0_0_18px_-4px_theme(colors.electric.500)] hover:bg-electric-400 disabled:opacity-60"
       >
         {status === 'working' ? 'Waiting for passkey…' : 'Create passkey'}
       </button>

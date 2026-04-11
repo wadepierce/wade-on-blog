@@ -1,5 +1,6 @@
 ---
 import Layout from '@/components/Layout.astro';
+import NeonTubesHero from '@/components/NeonTubesHero';
 import { db, schema } from '@/db';
 import { desc, eq } from 'drizzle-orm';
 
@@ -24,9 +25,10 @@ const fmt = new Intl.DateTimeFormat('en-US', {
 ---
 
 <Layout title="wade on blog">
+  <NeonTubesHero client:idle />
   {
     posts.length === 0 && (
-      <p class="text-neutral-500">Nothing here yet.</p>
+      <p class="text-neutral-500 dark:text-neutral-400">Nothing here yet.</p>
     )
   }
   <ul class="space-y-8">
@@ -34,9 +36,11 @@ const fmt = new Intl.DateTimeFormat('en-US', {
       posts.map((p) => (
         <li>
           <a href={`/posts/${p.slug}`} class="group block">
-            <h2 class="text-xl font-semibold group-hover:underline">{p.title}</h2>
+            <h2 class="text-xl font-semibold decoration-electric-500 group-hover:text-electric-600 group-hover:underline dark:group-hover:text-electric-400">
+              {p.title}
+            </h2>
             {p.publishedAt && (
-              <time class="text-xs text-neutral-500" datetime={p.publishedAt.toISOString()}>
+              <time class="text-xs text-electric-700 dark:text-electric-400" datetime={p.publishedAt.toISOString()}>
                 {fmt.format(p.publishedAt)}
               </time>
             )}

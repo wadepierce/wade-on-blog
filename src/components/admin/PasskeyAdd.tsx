@@ -41,7 +41,7 @@ export default function PasskeyAdd() {
         type="button"
         onClick={add}
         disabled={status === 'working'}
-        className="rounded bg-neutral-900 px-3 py-2 text-sm font-medium text-white hover:bg-neutral-700 disabled:opacity-60 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
+        className="rounded bg-electric-500 px-3 py-2 text-sm font-medium text-ink-950 shadow-[0_0_0_1px_theme(colors.electric.400),0_0_12px_-4px_theme(colors.electric.500)] hover:bg-electric-400 disabled:opacity-60"
       >
         {status === 'working' ? 'Waiting for passkey…' : 'Add a passkey'}
       </button>

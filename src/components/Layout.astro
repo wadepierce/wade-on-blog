@@ -17,14 +17,32 @@ const user = Astro.locals.user;
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
   </head>
-  <body class="h-full min-h-full bg-white text-neutral-900 antialiased dark:bg-neutral-950 dark:text-neutral-100">
-    <header class="border-b border-neutral-200 dark:border-neutral-800">
-      <div class="mx-auto flex max-w-3xl items-center justify-between px-4 py-4">
-        <a href="/" class="text-lg font-semibold">wade on blog</a>
+  <body class="h-full min-h-full bg-white text-neutral-900 antialiased dark:bg-ink-950 dark:text-neutral-100">
+    <div class="h-0.5 bg-gradient-to-r from-electric-400 via-electric-500 to-electric-700"></div>
+    <header class="border-b border-electric-200 dark:border-electric-900">
+      <div class="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-4">
+        <a href="/" class="flex items-center gap-2 text-lg font-semibold text-neutral-900 dark:text-white">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="h-6 w-6 text-electric-500 drop-shadow-[0_0_6px_rgba(0,180,255,0.55)]"
+            aria-hidden="true"
+          >
+            <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"></path>
+          </svg>
+          <span>wade on blog</span>
+        </a>
         <nav class="flex items-center gap-4 text-sm">
-          <a href="/rss.xml" class="text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100">RSS</a>
+          <iframe
+            src="https://codepen.io/paulnoble/embed/gbPGMZZ?default-tab=result&theme-id=dark&editable=false"
+            title="Clock by Paul Noble"
+            loading="lazy"
+            class="hidden h-12 w-44 overflow-hidden rounded border border-electric-700/40 bg-ink-900 sm:block"
+          ></iframe>
+          <a href="/rss.xml" class="text-neutral-500 hover:text-electric-600 dark:hover:text-electric-400">RSS</a>
           {user && (
-            <a href="/admin" class="text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100">Admin</a>
+            <a href="/admin" class="text-neutral-500 hover:text-electric-600 dark:hover:text-electric-400">Admin</a>
           )}
         </nav>
       </div>

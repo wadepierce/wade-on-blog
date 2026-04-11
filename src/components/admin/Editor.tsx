@@ -116,11 +116,11 @@ export default function Editor({ initial }: Props) {
   return (
     <div className="flex flex-col gap-4">
       {/* Sticky top bar */}
-      <div className="sticky top-0 z-10 -mx-4 border-b border-neutral-200 bg-white/90 px-4 py-2 backdrop-blur dark:border-neutral-800 dark:bg-neutral-950/90">
+      <div className="sticky top-0 z-10 -mx-4 border-b border-electric-200 bg-white/90 px-4 py-2 backdrop-blur dark:border-electric-900 dark:bg-ink-950/90">
         <div className="flex items-center justify-between gap-2">
           <a
             href="/admin"
-            className="text-sm text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100"
+            className="text-sm text-neutral-500 hover:text-electric-600 dark:hover:text-electric-400"
           >
             ← Back
           </a>
@@ -148,7 +148,7 @@ export default function Editor({ initial }: Props) {
               <button
                 type="button"
                 onClick={() => void publish(false)}
-                className="rounded bg-neutral-200 px-3 py-1 text-sm font-medium hover:bg-neutral-300 dark:bg-neutral-800 dark:hover:bg-neutral-700"
+                className="rounded bg-neutral-200 px-3 py-1 text-sm font-medium text-neutral-900 hover:bg-neutral-300 dark:bg-ink-800 dark:text-electric-300 dark:hover:bg-ink-900"
               >
                 Unpublish
               </button>
@@ -156,7 +156,7 @@ export default function Editor({ initial }: Props) {
               <button
                 type="button"
                 onClick={() => void publish(true)}
-                className="rounded bg-neutral-900 px-3 py-1 text-sm font-medium text-white hover:bg-neutral-700 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
+                className="rounded bg-electric-500 px-3 py-1 text-sm font-medium text-ink-950 shadow-[0_0_0_1px_theme(colors.electric.400),0_0_12px_-4px_theme(colors.electric.500)] hover:bg-electric-400"
               >
                 Publish
               </button>
@@ -190,7 +190,7 @@ export default function Editor({ initial }: Props) {
         value={draft.slug}
         onChange={(e) => setDraft((d) => ({ ...d, slug: e.target.value }))}
         placeholder="slug"
-        className="w-full border-b border-neutral-200 bg-transparent py-1 text-sm text-neutral-500 focus:border-neutral-400 focus:outline-none dark:border-neutral-800 dark:focus:border-neutral-600"
+        className="w-full border-b border-neutral-200 bg-transparent py-1 text-sm text-neutral-500 focus:border-electric-500 focus:outline-none dark:border-electric-900 dark:focus:border-electric-400"
       />
 
       <input
@@ -233,7 +233,7 @@ export default function Editor({ initial }: Props) {
         onChange={(e) => setDraft((d) => ({ ...d, excerpt: e.target.value }))}
         placeholder="Excerpt (optional — auto-generated from content if blank)"
         rows={2}
-        className="w-full rounded border border-neutral-200 bg-transparent p-2 text-sm dark:border-neutral-800"
+        className="w-full rounded border border-neutral-200 bg-transparent p-2 text-sm focus:border-electric-500 focus:outline-none dark:border-electric-900 dark:focus:border-electric-400"
       />
     </div>
   );
