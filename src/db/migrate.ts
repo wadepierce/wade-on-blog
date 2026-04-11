@@ -2,6 +2,7 @@ import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import { fileURLToPath } from 'node:url';
+import fs from 'node:fs';
 import path from 'node:path';
 
 const connectionString = process.env.DATABASE_URL;
@@ -9,12 +10,29 @@ if (!connectionString) {
   throw new Error('DATABASE_URL is not set');
 }
 
-const migrationsFolder = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  'migrations',
-);
+// The migrations folder needs to be resolvable in three environments:
+//   1. `npm run dev` — source tree, next to this file
+//   2. `tsx src/db/migrate.ts` — source tree, next to this file
+//   3. `node dist/server/entry.mjs` on Railway — Astro bundles this module into
+//      dist/server, so `import.meta.url` no longer lives next to src/db/migrations.
+//      We copy the folder into dist/server/db/migrations during the build (see
+//      nixpacks.toml) and also fall back to a cwd-relative lookup.
+function resolveMigrationsFolder(): string {
+  const candidates = [
+    path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'migrations'),
+    path.resolve(process.cwd(), 'dist/server/db/migrations'),
+    path.resolve(process.cwd(), 'src/db/migrations'),
+  ];
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) return candidate;
+  }
+  throw new Error(
+    `migrations folder not found; tried:\n  ${candidates.join('\n  ')}`,
+  );
+}
 
 export async function runMigrations() {
+  const migrationsFolder = resolveMigrationsFolder();
   const client = postgres(connectionString!, { max: 1 });
   try {
     await migrate(drizzle(client), { migrationsFolder });

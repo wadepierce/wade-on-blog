@@ -5,7 +5,10 @@ nixPkgs = ['nodejs_20', 'vips']
 cmds = ['npm ci']
 
 [phases.build]
-cmds = ['npm run build']
+cmds = [
+  'npm run build',
+  'mkdir -p dist/server/db && cp -r src/db/migrations dist/server/db/migrations',
+]
 
 [start]
 cmd = 'node ./dist/server/entry.mjs'
