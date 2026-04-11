@@ -7,7 +7,9 @@ cmds = ['npm ci']
 [phases.build]
 cmds = [
   'npm run build',
-  'mkdir -p dist/server/db && cp -r src/db/migrations dist/server/db/migrations',
+  'mkdir -p dist/server/db',
+  'cp -r src/db/migrations dist/server/db/migrations',
+  'cp -r src/db/migrations dist/server/migrations',
 ]
 
 [start]

@@ -11,20 +11,28 @@ if (!connectionString) {
 }
 
 // The migrations folder needs to be resolvable in three environments:
-//   1. `npm run dev` — source tree, next to this file
-//   2. `tsx src/db/migrate.ts` — source tree, next to this file
-//   3. `node dist/server/entry.mjs` on Railway — Astro bundles this module into
+//   1. `npm run dev` / `tsx src/db/migrate.ts` — source tree, next to this file
+//   2. `node dist/server/entry.mjs` on Railway — Astro bundles this module into
 //      dist/server, so `import.meta.url` no longer lives next to src/db/migrations.
-//      We copy the folder into dist/server/db/migrations during the build (see
-//      nixpacks.toml) and also fall back to a cwd-relative lookup.
+//      We copy the folder into several dist locations during the build (see
+//      nixpacks.toml) and try every plausible path at runtime.
+// A folder only counts if it actually contains meta/_journal.json, which is
+// what drizzle's migrator reads first.
 function resolveMigrationsFolder(): string {
+  const here = path.dirname(fileURLToPath(import.meta.url));
+  const cwd = process.cwd();
   const candidates = [
-    path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'migrations'),
-    path.resolve(process.cwd(), 'dist/server/db/migrations'),
-    path.resolve(process.cwd(), 'src/db/migrations'),
+    path.resolve(here, 'migrations'),
+    path.resolve(here, 'db/migrations'),
+    path.resolve(cwd, 'dist/server/migrations'),
+    path.resolve(cwd, 'dist/server/db/migrations'),
+    path.resolve(cwd, 'src/db/migrations'),
   ];
   for (const candidate of candidates) {
-    if (fs.existsSync(candidate)) return candidate;
+    if (fs.existsSync(path.join(candidate, 'meta', '_journal.json'))) {
+      console.log(`[migrate] using migrations folder: ${candidate}`);
+      return candidate;
+    }
   }
   throw new Error(
     `migrations folder not found; tried:\n  ${candidates.join('\n  ')}`,
