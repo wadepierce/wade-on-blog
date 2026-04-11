@@ -1,13 +1,16 @@
 ---
 import Layout from '@/components/Layout.astro';
+import PasskeyAdd from '@/components/admin/PasskeyAdd';
 import { db, schema } from '@/db';
-import { desc } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import { requireAdmin } from '@/lib/auth';
 
 export const prerender = false;
 
 const denied = requireAdmin(Astro, 'page');
 if (denied) return denied;
+
+const user = Astro.locals.user!;
 
 const posts = await db
   .select({
@@ -19,6 +22,29 @@ const posts = await db
   })
   .from(schema.posts)
   .orderBy(desc(schema.posts.updatedAt));
+
+const passkeys = await db
+  .select({
+    id: schema.passkeys.id,
+    credentialId: schema.passkeys.credentialId,
+    transports: schema.passkeys.transports,
+    createdAt: schema.passkeys.createdAt,
+  })
+  .from(schema.passkeys)
+  .where(eq(schema.passkeys.userId, user.id))
+  .orderBy(desc(schema.passkeys.createdAt));
+
+// Show only a short fingerprint of the credential so the row is identifiable
+// without leaking the full id.
+function fingerprint(bytes: Uint8Array): string {
+  return Buffer.from(bytes).toString('base64url').slice(0, 10);
+}
+
+const dateFmt = new Intl.DateTimeFormat(undefined, {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
 ---
 
 <Layout title="Admin">
@@ -61,4 +87,28 @@ const posts = await db
       ))
     }
   </ul>
+
+  <section class="mt-12 border-t border-neutral-200 pt-8 dark:border-neutral-800">
+    <div class="flex items-center justify-between">
+      <h2 class="text-lg font-bold">Passkeys</h2>
+      <PasskeyAdd client:load />
+    </div>
+    <p class="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
+      Devices that can sign in as admin. Add one per device you use.
+    </p>
+    <ul class="mt-4 divide-y divide-neutral-200 dark:divide-neutral-800">
+      {
+        passkeys.map((pk) => (
+          <li class="flex items-center justify-between py-3 text-sm">
+            <span class="font-mono text-neutral-700 dark:text-neutral-300">
+              {fingerprint(pk.credentialId)}
+            </span>
+            <span class="text-xs text-neutral-500">
+              Added {dateFmt.format(pk.createdAt)}
+            </span>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
 </Layout>
