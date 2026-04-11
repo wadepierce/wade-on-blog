@@ -11,6 +11,14 @@ export default defineConfig({
     host: process.env.HOST ?? '0.0.0.0',
     port: Number(process.env.PORT ?? 4321),
   },
+  // Astro's generic Origin/Host CSRF check is unreliable behind Railway's
+  // envoy proxy and was blocking legitimate same-origin passkey POSTs. We
+  // have stronger protection elsewhere: every WebAuthn flow is origin-bound
+  // via RP_ID, session cookies are SameSite=lax, and admin endpoints are
+  // gated by requireAdmin.
+  security: {
+    checkOrigin: false,
+  },
   vite: {
     ssr: {
       // sharp and postgres must stay external on the server

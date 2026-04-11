@@ -27,5 +27,5 @@ const initial = {
 ---
 
 <Layout title={`Edit · ${post.title}`}>
-  <Editor client:load initial={initial} />
+  <Editor client:only="react" initial={initial} />
 </Layout>
