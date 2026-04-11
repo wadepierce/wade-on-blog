@@ -1,8 +1,8 @@
-import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { createPgClient } from './client';
 
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
@@ -15,7 +15,7 @@ const migrationsFolder = path.resolve(
 );
 
 export async function runMigrations() {
-  const client = postgres(connectionString!, { max: 1 });
+  const client = createPgClient(connectionString!, { max: 1 });
   try {
     await migrate(drizzle(client), { migrationsFolder });
   } finally {

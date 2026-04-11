@@ -12,6 +12,10 @@ async function bootOnce() {
       try {
         await runMigrations();
       } catch (err) {
+        // Don't cache the failure — let the next request retry. A transient
+        // database hiccup during cold start shouldn't permanently poison the
+        // process.
+        bootPromise = null;
         console.error('[boot] migration failed:', err);
         throw err;
       }
